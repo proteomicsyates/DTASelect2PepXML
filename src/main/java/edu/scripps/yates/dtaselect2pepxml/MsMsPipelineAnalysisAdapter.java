@@ -49,6 +49,7 @@ public class MsMsPipelineAnalysisAdapter implements Adapter<MsmsPipelineAnalysis
 	@Override
 	public MsmsPipelineAnalysis adapt() {
 		try {
+			System.out.println("Reading input file: " + fileName);
 			MsmsPipelineAnalysis msmsPipelineAnalysis = new MsmsPipelineAnalysis();
 			msmsPipelineAnalysis.setSummaryXml(fileName);
 			Date now = new Date();
@@ -106,7 +107,7 @@ public class MsMsPipelineAnalysisAdapter implements Adapter<MsmsPipelineAnalysis
 						specificity.setCut(getString(enzyme.getCleavage()));
 					}
 					specificity.setSense(sense);
-					if (enzyme.getRestrict().length > 0) {
+					if (enzyme.getRestrict() != null && enzyme.getRestrict().length > 0) {
 						specificity.setNoCut(getString(enzyme.getRestrict()));
 					}
 

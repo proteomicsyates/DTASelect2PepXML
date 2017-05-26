@@ -21,6 +21,7 @@ import com.compomics.util.io.MascotEnzymeReader;
 import com.compomics.util.protein.Enzyme;
 
 import edu.scripps.yates.dtaselectparser.DTASelectParser;
+import edu.scripps.yates.utilities.files.FileUtils;
 import umich.ms.fileio.filetypes.pepxml.jaxb.nested.MsmsPipelineAnalysis;
 
 public class DTASelect2PepXML {
@@ -54,9 +55,10 @@ public class DTASelect2PepXML {
 					if (enzyme == null) {
 						showError(args[2] + " is not recognized as a valid enzyme", false);
 					}
-				} else {
-					System.out.println("Assuming " + enzyme.toString() + " enzyme.");
 				}
+				System.out.println("\n-----------------\nUsing the following enzyme:\n" + enzyme.toString()
+						+ "\n-----------------");
+
 			} catch (IOException e) {
 				e.printStackTrace();
 				showError(e.getMessage(), false);
@@ -94,8 +96,12 @@ public class DTASelect2PepXML {
 				}
 			}
 		} finally {
-			System.out.println("Program exited.");
+			System.out.println("Program finished. Good bye!");
 		}
+	}
+
+	public DTASelect2PepXML() {
+
 	}
 
 	private void convert(File dtaSelectFile, Enzyme enzyme, String rawDataExtension)
@@ -107,14 +113,15 @@ public class DTASelect2PepXML {
 
 		MsmsPipelineAnalysis msmsPipelineAnalysis = new MsMsPipelineAnalysisAdapter(parser, rawDataExtension, enzyme)
 				.adapt();
-		System.out.println("File created in memory");
-		System.out.println("Writting file to disc");
+		System.out.println("Output file created in memory.");
+		System.out.println("Writting file to disc.");
 		JAXBContext jaxbContext = JAXBContext.newInstance(MsmsPipelineAnalysis.class);
 		Marshaller marshaller = jaxbContext.createMarshaller();
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
 		marshaller.marshal(msmsPipelineAnalysis, outputFile);
-		System.out.println("File created at " + outputFile.getAbsolutePath());
+		System.out.println("File created at " + outputFile.getAbsolutePath() + " ("
+				+ FileUtils.getDescriptiveSizeFromBytes(outputFile.length()) + ")");
 
 	}
 
