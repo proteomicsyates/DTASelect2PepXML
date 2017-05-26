@@ -3,7 +3,7 @@
 This converter has been developed in order to obtain pepXML files from DTASelect output files, for the need of creating spectrum libraries using [SpectraST](http://tools.proteomecenter.org/wiki/index.php?title=Software:SpectraST) software from results of ProLuCID + DTASelect workflow.
 
 ## How to obtain it
-Go to [here](http://sealion.scripps.edu:8080/hudson/job/DTASelect2PepXML/lastSuccessfulBuild/artifact/target/dtaselect2pepxml.jar)
+Go to [here](http://sealion.scripps.edu:8080/hudson/job/DTASelect2PepXML/lastSuccessfulBuild/artifact/target/dtaselect2pepxml.jar) and download the jar file. It will contain all required dependencies, so you don't have to worry about it.
 
 ## How to use it
 1. Download the jar file and save it to your computer.
