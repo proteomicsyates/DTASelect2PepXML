@@ -28,7 +28,7 @@ spectrast -cNconsensus -cAC -cP0 file.pep.xml
 ```
 
 This will create a consensus.splib file.  
-_Note that instead of ```file.pep.xml``` you could use wildcards in order to create a library from multiple pep.xml files (i.e. file*.pep.xml).  
+_Note that instead of ```file.pep.xml``` you could use wildcards in order to create a library from multiple pep.xml files (i.e. ```file*.pep.xml```).  
 The ```cP0``` option has to be added because the pepXML file comming from dtaselect doesn't have p-values, so we need to include all matches with pvalue>=0 (= option ```cP0```)._
 
  - Apply a quality control filter to the consensus splib library:
