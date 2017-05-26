@@ -135,8 +135,8 @@ public class DTASelect2PepXML {
 
 	private static void showUsage() {
 		System.out.println("Usage:");
-		System.out.println("java -jar dtaselect2pepxml dtaselect_file raw_data_extension [enzyme_name]");
-		System.out.println("Where enzyme name can be one is these ones:");
+		System.out.println("java -jar dtaselect2pepxml.jar dtaselect_file raw_data_extension [enzyme_name]");
+		System.out.println("\nWhere enzyme name can be one is these ones:");
 
 		InputStream in = EnzymeDigest.class.getClassLoader().getResourceAsStream("enzymes.txt");
 		if (in != null) {
