@@ -26,21 +26,22 @@ java -jar dtaselect2pepxml.jar c:\users\salva\desktop\data\DTASelect-filter.txt
 ```
 spectrast -cNconsensus -cAC -cP0 file.pep.xml
 ```
-
-This will create a consensus.splib file.  
+This will create a spectra library file (extension .splib). Additionally .pepidx, .spidx and .sptxt files will be also created. .sptxt file is compatible with [Skyline](https://skyline.ms/project/home/software/Skyline/begin.view) and can be edited and viewed there.   
 _Note that instead of ```file.pep.xml``` you could use wildcards in order to create a library from multiple pep.xml files (i.e. ```file*.pep.xml```).  
-The ```cP0``` option has to be added because the pepXML file comming from dtaselect doesn't have p-values, so we need to include all matches with pvalue>=0 (= option ```cP0```)._
+Option ```-cAC``` will create a consensus library.  
+Option ```-cP0``` has to be added because the pepXML file comming from dtaselect doesn't have p-values, so we need to include all matches with pvalue>=0 (= option ```-cP0```)._
 
  - Apply a quality control filter to the consensus splib library:
 ```
 spectrast -cNconsensusQ -cAQ consensus.splib
 ```
 
- - For using the library in TPP, generate DECOYs by: 
+ - For using the library in TPP and getting a FDR you can generate and append DECOY spectra to the library by: 
 ```
 spectrast -cNconsensusQDecoy -cAD -cc -cy1 consensusQ.splib
 ```
-
-_Option ```cy1``` is the proportion of decoys over forward entries. ```cy2``` will mean that it will generate twice decoy entries over forward._
+_Option ```-cAD``` generates decoy spectra to the library
+Option ```-cc``` concatenates the generated decoy spectra to the library
+Option ```-cy1``` is the proportion of decoys over forward entries. ```cy2``` will mean that it will generate twice decoy entries over forward._
 
 
