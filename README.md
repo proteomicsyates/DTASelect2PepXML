@@ -7,7 +7,11 @@ Go to [here](http://sealion.scripps.edu:8080/hudson/job/DTASelect2PepXML/lastSuc
 
 ## How to use it
 1. Download the jar file and save it to your computer.
-2. In the command line, move to the folder where you downloaded the program and type ``java -jar dtaselect2pepxml.jar pepxml_file`` where:  
+2. In the command line, move to the folder where you downloaded the program and type 
+```
+java -jar dtaselect2pepxml.jar pepxml_file
+```
+where:  
    - ```pepxml_file``` is either a single pepXML file or a folder. In case of being a folder, all files with ```txt``` extension will be considered as input files for the conversion. (**MANDATORY**)
 
 **Examples**:
@@ -42,30 +46,34 @@ This will generate a pepXML file as DTASelect-filter.pep.xml. with a Chymotrypsi
 ```
 spectrast -cNraw -cP0 file.pep.xml
 ```
-**IMPORTANT** Referenced RAW files need to be present in the same folder. As an example:
- - Having a PSM in the DTASelect file like:
+**IMPORTANT** Referenced RAW files need to be present in the same folder. As an example:  
+  
+Having a PSM in the DTASelect file like:
 ```
  041117_DDA_Rep1.53788.53788.5	6.7315	0.5368	100.0	4584.0947	4584.0986	-0.9	1.068073E7	1	10.015502	4.98	36.7	1	-.MRECISIHVGQAGVQIGNACWELYCLEHGIQPDGQMPSDK.T
 ```
 And asuming that the ```raw_file_extension``` value was "mzXML", a file like ```041117_DDA_Rep1.mzXML``` is going to be needed to be present in the same folder in order to allow SpectraST to read the spectrum that matched to that peptide.  
+  
 This will create a spectra library file (raw.splib). Additionally _raw.pepidx_, _raw.spidx_ and _raw.sptxt_ files will be also created. _raw.sptxt_ file is compatible with [Skyline](https://skyline.ms/project/home/software/Skyline/begin.view) and can be edited and viewed there.   
+  
 _Note that instead of ```file.pep.xml``` you could use wildcards in order to create a library from multiple pep.xml files (i.e. ```file*.pep.xml```).  
 Option ```-cP0``` has to be added because the pepXML file comming from dtaselect doesn't have p-values, so we need to include all matches with pvalue>=0 (= option ```-cP0```)._
 
- - Create a consensus library:
+ - **Create a consensus library:**
  ```
  spectrast -cNcons -cAC raw.splib
  ```
- This will create another set of files for a library named as cons.splib, a consensus library, meaning that a consensus spectrum will be created for each peptide from all spectra matching to that peptide.
+ _Option ```-cAC``` indicates to create a consensus library, meaning that a single consensus spectrum will be created for each peptide sequence from all spectra matching to that peptide.
+ This will create another set of files for a library named as cons.splib._
  
- - Apply a quality control filter to the consensus splib library:
+ - **Apply a quality control filter to the consensus splib library:**
 ```
 spectrast -cNconsQ -cAQ cons.splib
 ```
-_Option ```-cAC``` indicate to create a consensus library.
+_Option ```-cAQ``` indicates to perform the quality control filters which will discard some of the spectra in the library.
 This will create another set of files for a library named as consQ.splib_
 
- - For using the library in TPP and getting a FDR you can generate and append DECOY spectra to the library by: 
+ - **Appending DECOY spectra to the library by:** 
 ```
 spectrast -cNconsQdecoy -cAD -cc -cy1 consQ.splib
 ```
