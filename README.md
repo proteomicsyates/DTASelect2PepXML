@@ -48,9 +48,8 @@ This will generate a pepXML file as DTASelect-filter.pep.xml. with a Chymotrypsi
 ```
 spectrast -cNraw -cP0 file.pep.xml
 ```
-This will create a spectra library file (raw.splib). Additionally _raw.pepidx_, _raw.spidx_ and _raw.sptxt_ files will be also created. _raw.sptxt_ file is compatible with [Skyline](https://skyline.ms/project/home/software/Skyline/begin.view) and can be edited and viewed there.   
-  
-_Note that instead of ```file.pep.xml``` you could use wildcards in order to create a library from multiple pep.xml files (i.e. ```file*.pep.xml```).  
+_This will create a spectra library file (raw.splib). Additionally _raw.pepidx_, _raw.spidx_ and _raw.sptxt_ files will be also created. _raw.sptxt_ file is compatible with [Skyline](https://skyline.ms/project/home/software/Skyline/begin.view) and can be edited and viewed there.   
+Note that instead of ```file.pep.xml``` you could use wildcards in order to create a library from multiple pep.xml files (i.e. ```file*.pep.xml```).  
 Option ```-cNraw``` indicates that the output library files will be named as raw.splib.  
 Option ```-cP0``` has to be added because the pepXML file comming from dtaselect doesn't have p-values, so we need to include all matches with pvalue>=0 (= option ```-cP0```)._
 
@@ -70,15 +69,17 @@ And asuming that the ```raw_file_extension``` value was "mzXML", a file like ```
  ```
  spectrast -cNcons -cAC raw.splib
  ```
- _Option ```-cAC``` indicates to create a consensus library, meaning that a single consensus spectrum will be created for each peptide sequence from all spectra matching to that peptide.  
- This will create another set of files for a library named as cons.splib._
+_This will create another set of files for a library named as cons.splib.  
+Option ```-cAC``` indicates to create a consensus library, meaning that a single consensus spectrum will be created for each peptide sequence from all spectra matching to that peptide._
+
  
  **3.C Apply a quality control filter to the consensus splib library:**
 ```
 spectrast -cNconsQ -cAQ cons.splib
 ```
-_Option ```-cAQ``` indicates to perform the quality control filters which will discard some of the spectra in the library.  
-This will create another set of files for a library named as consQ.splib._
+_This will create another set of files for a library named as consQ.splib._  
+Option ```-cAQ``` indicates to perform the quality control filters which will discard some of the spectra in the library._ 
+
 
 **3.D Appending DECOY spectra to the library by:** 
 ```
