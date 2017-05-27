@@ -84,7 +84,7 @@ This will create another set of files for a library named as consQ.splib._
 ```
 spectrast -cNconsQdecoy -cAD -cc -cy1 consQ.splib
 ```
-This will create another set of files for a library named as consQDecoy.splib
+This will create another set of files for a library named as consQdecoy.splib
 _Option ```-cAD``` generates decoy spectra to the library.  
 Option ```-cc``` concatenates the generated decoy spectra to the library.  
 Option ```-cy1``` is the proportion of decoys over forward entries. ```cy2``` will mean that it will generate twice decoy entries over forward._
