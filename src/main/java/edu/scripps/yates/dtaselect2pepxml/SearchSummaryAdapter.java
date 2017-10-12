@@ -17,12 +17,14 @@ public class SearchSummaryAdapter implements Adapter<SearchSummary> {
 	private final DTASelectParser parser;
 	private String baseName;
 	private final com.compomics.util.protein.Enzyme enzyme;
+	private final File fastaFile;
 
-	public SearchSummaryAdapter(DTASelectParser parser, com.compomics.util.protein.Enzyme enzyme2, String rawFileName) {
+	public SearchSummaryAdapter(DTASelectParser parser, com.compomics.util.protein.Enzyme enzyme2, String rawFileName,
+			File rawFileFolder, File fastaFile) {
 		this.parser = parser;
-		String inputFile = parser.getInputFilePathes().iterator().next();
-		this.baseName = new File(inputFile).getParentFile().getAbsolutePath() + File.separator + rawFileName;
+		this.baseName = new File(rawFileFolder.getAbsolutePath()) + File.separator + rawFileName;
 		this.enzyme = enzyme2;
+		this.fastaFile = fastaFile;
 	}
 
 	@Override
@@ -46,7 +48,11 @@ public class SearchSummaryAdapter implements Adapter<SearchSummary> {
 		SearchDatabase searchDatabase = new SearchDatabase();
 		ret.setSearchDatabase(searchDatabase);
 		try {
-			searchDatabase.setLocalPath(parser.getFastaPath());
+			if (fastaFile != null && fastaFile.exists()) {
+				searchDatabase.setLocalPath(fastaFile.getAbsolutePath());
+			} else {
+				searchDatabase.setLocalPath(parser.getFastaPath());
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

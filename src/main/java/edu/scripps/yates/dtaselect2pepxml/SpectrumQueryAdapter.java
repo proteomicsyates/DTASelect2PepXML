@@ -135,78 +135,78 @@ public class SpectrumQueryAdapter implements Adapter<SpectrumQuery> {
 		if (psm.getXcorr() != null) {
 			NameValueType xcorr = new NameValueType();
 			searchHit.getSearchScore().add(xcorr);
-			xcorr.setName("XCorr");
-			xcorr.setValue(format4Decimals.format(psm.getXcorr()));
+			xcorr.setName("xcorr");
+			xcorr.setValueStr(format4Decimals.format(psm.getXcorr()));
 		}
 		// deltacn
 		if (psm.getDeltacn() != null) {
 			NameValueType deltaCn = new NameValueType();
 			searchHit.getSearchScore().add(deltaCn);
-			deltaCn.setName("DeltaCn");
-			deltaCn.setValue(format4Decimals.format(psm.getDeltacn()));
+			deltaCn.setName("deltacn");
+			deltaCn.setValueStr(format4Decimals.format(psm.getDeltacn()));
 		}
 		// Conf%
 		if (psm.getConf() != null) {
 			NameValueType conf = new NameValueType();
 			searchHit.getSearchScore().add(conf);
 			conf.setName("Conf%");
-			conf.setValue(format4Decimals.format(psm.getConf()));
+			conf.setValueStr(format4Decimals.format(psm.getConf()));
 		}
 		// SpR
 		if (psm.getSpr() != null) {
 			NameValueType spr = new NameValueType();
 			searchHit.getSearchScore().add(spr);
-			spr.setName("SpR");
-			spr.setValue(format4Decimals.format(psm.getSpr()));
+			spr.setName("sprank");
+			spr.setValueStr(format4Decimals.format(psm.getSpr()));
 		}
 		// Prob Score
 		if (psm.getProb_score() != null) {
 			NameValueType probScore = new NameValueType();
 			searchHit.getSearchScore().add(probScore);
 			probScore.setName("Prob Score");
-			probScore.setValue(format4Decimals.format(psm.getProb_score()));
+			probScore.setValueStr(format4Decimals.format(psm.getProb_score()));
 		}
 		// Prob
 		if (psm.getProb() != null) {
 			NameValueType prob = new NameValueType();
 			searchHit.getSearchScore().add(prob);
 			prob.setName("Prob");
-			prob.setValue(format4Decimals.format(psm.getProb()));
+			prob.setValueStr(format4Decimals.format(psm.getProb()));
 		}
 		// IonProportion
 		if (psm.getIonProportion() != null) {
 			NameValueType prob = new NameValueType();
 			searchHit.getSearchScore().add(prob);
 			prob.setName("IonProportion");
-			prob.setValue(format4Decimals.format(psm.getIonProportion()));
+			prob.setValueStr(format4Decimals.format(psm.getIonProportion()));
 		}
 		// Redundancy
 		if (psm.getRedundancy() != null) {
 			NameValueType prob = new NameValueType();
 			searchHit.getSearchScore().add(prob);
 			prob.setName("Redundancy");
-			prob.setValue(format4Decimals.format(psm.getRedundancy()));
+			prob.setValueStr(format4Decimals.format(psm.getRedundancy()));
 		}
 		// pI
 		if (psm.getPi() != null) {
 			NameValueType prob = new NameValueType();
 			searchHit.getSearchScore().add(prob);
 			prob.setName("pI");
-			prob.setValue(format4Decimals.format(psm.getPi()));
+			prob.setValueStr(format4Decimals.format(psm.getPi()));
 		}
 		// PPM
 		if (psm.getPpmError() != null) {
 			NameValueType prob = new NameValueType();
 			searchHit.getSearchScore().add(prob);
 			prob.setName("PPM");
-			prob.setValue(format4Decimals.format(psm.getPpmError()));
+			prob.setValueStr(format4Decimals.format(psm.getPpmError()));
 		}
 		// precursor_mz_diff
 		if (delta != null) {
 			NameValueType precursor_mz_diff = new NameValueType();
 			searchHit.getSearchScore().add(precursor_mz_diff);
 			precursor_mz_diff.setName("precursor_mz_diff");
-			precursor_mz_diff.setValue(format4Decimals.format(delta));
+			precursor_mz_diff.setValueStr(format4Decimals.format(delta));
 		}
 
 		return spectrumQuery;

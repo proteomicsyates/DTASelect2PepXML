@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,6 +20,8 @@ import com.compomics.util.protein.Enzyme;
 import edu.scripps.yates.dtaselectparser.DTASelectParser;
 import edu.scripps.yates.dtaselectparser.util.DTASelectPSM;
 import edu.scripps.yates.utilities.pattern.Adapter;
+import gnu.trove.map.hash.THashMap;
+import gnu.trove.set.hash.THashSet;
 import umich.ms.fileio.filetypes.pepxml.jaxb.nested.EngineType;
 import umich.ms.fileio.filetypes.pepxml.jaxb.nested.MsmsPipelineAnalysis;
 import umich.ms.fileio.filetypes.pepxml.jaxb.nested.MsmsPipelineAnalysis.MsmsRunSummary.SampleEnzyme;
@@ -31,19 +31,24 @@ public class MsMsPipelineAnalysisAdapter implements Adapter<MsmsPipelineAnalysis
 	private static final String UNKNOWN = "UNKNOWN";
 	private final DTASelectParser parser;
 	private final String fileName;
-	private final String baseName;
 	private final String rawDataType;
 	private final com.compomics.util.protein.Enzyme enzyme;
+	private final File fastaFile;
+	private final File rawFileFolder;
 
-	public MsMsPipelineAnalysisAdapter(DTASelectParser parser, String rawDataType,
-			com.compomics.util.protein.Enzyme enzyme2) {
+	public MsMsPipelineAnalysisAdapter(DTASelectParser parser, File rawFileFolder, String rawFileExtension,
+			File fastaFile, com.compomics.util.protein.Enzyme enzyme2) {
 		this.parser = parser;
 		String inputFile = parser.getInputFilePathes().iterator().next();
 		this.fileName = FilenameUtils.getName(inputFile);
-		this.baseName = inputFile + File.separator + FilenameUtils.getBaseName(fileName);
-		this.rawDataType = rawDataType;
+		this.rawFileFolder = rawFileFolder;
+		if (rawFileExtension != null) {
+			this.rawDataType = rawFileExtension;
+		} else {
+			this.rawDataType = "mzXML";
+		}
 		this.enzyme = enzyme2;
-
+		this.fastaFile = fastaFile;
 	}
 
 	@Override
@@ -60,32 +65,35 @@ public class MsMsPipelineAnalysisAdapter implements Adapter<MsmsPipelineAnalysis
 
 			List<MsmsPipelineAnalysis.MsmsRunSummary> msmsRunSummaryList = msmsPipelineAnalysis.getMsmsRunSummary();
 
-			Map<String, Set<DTASelectPSM>> psmsByRawFile = new HashMap<String, Set<DTASelectPSM>>();
+			Map<String, Set<DTASelectPSM>> psmsByRawFile = new THashMap<String, Set<DTASelectPSM>>();
 			Collection<DTASelectPSM> values = parser.getDTASelectPSMsByPSMID().values();
 			for (DTASelectPSM psm : values) {
 				if (psmsByRawFile.containsKey(psm.getRawFileName())) {
 					psmsByRawFile.get(psm.getRawFileName()).add(psm);
 				} else {
-					Set<DTASelectPSM> psms = new HashSet<DTASelectPSM>();
+					Set<DTASelectPSM> psms = new THashSet<DTASelectPSM>();
 					psms.add(psm);
 					psmsByRawFile.put(psm.getRawFileName(), psms);
 				}
 			}
-
 			for (String rawFileName : psmsByRawFile.keySet()) {
 
 				MsmsPipelineAnalysis.MsmsRunSummary msmsRunSummary = new MsmsPipelineAnalysis.MsmsRunSummary();
 				msmsRunSummaryList.add(msmsRunSummary);
-				msmsRunSummary.setBaseName(
-						new File(parser.getInputFilePathes().iterator().next()).getParentFile().getAbsolutePath()
-								+ File.separator + rawFileName);
-				msmsRunSummary.setMsManufacturer(UNKNOWN);
-				msmsRunSummary.setMsDetector(UNKNOWN);
-				msmsRunSummary.setMsModel(UNKNOWN);
-				msmsRunSummary.setMsIonization(UNKNOWN);
-				msmsRunSummary.setMsMassAnalyzer(UNKNOWN);
-				msmsRunSummary.setRawDataType(rawDataType);
-				msmsRunSummary.setRawData(rawDataType);
+				String baseName = null;
+				if (this.rawFileFolder != null && rawFileFolder.exists()) {
+					baseName = rawFileFolder.getAbsolutePath() + File.separator + rawFileName;
+				} else {
+					baseName = parser.getInputFilePathes().iterator().next();
+				}
+				msmsRunSummary.setBaseName(baseName);
+				msmsRunSummary.setMsManufacturer("Thermo Scentific");
+				// msmsRunSummary.setMsDetector(UNKNOWN);
+				msmsRunSummary.setMsModel("Q Exactive Orbitrap");
+				// msmsRunSummary.setMsIonization(UNKNOWN);
+				// msmsRunSummary.setMsMassAnalyzer(UNKNOWN);
+				msmsRunSummary.setRawDataType("raw");
+				msmsRunSummary.setRawData("." + rawDataType);
 				// enzyme
 				if (enzyme != null) {
 					SampleEnzyme sampleEnzyme = new SampleEnzyme();
@@ -114,7 +122,8 @@ public class MsMsPipelineAnalysisAdapter implements Adapter<MsmsPipelineAnalysis
 				}
 				msmsRunSummary.setSearchEngine(EngineType.SEQUEST);
 				// search summary
-				msmsRunSummary.getSearchSummary().add(new SearchSummaryAdapter(parser, enzyme, rawFileName).adapt());
+				msmsRunSummary.getSearchSummary()
+						.add(new SearchSummaryAdapter(parser, enzyme, rawFileName, rawFileFolder, fastaFile).adapt());
 				List<MsmsPipelineAnalysis.MsmsRunSummary.SpectrumQuery> spectrumQueryList = msmsRunSummary
 						.getSpectrumQuery();
 
