@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import edu.scripps.yates.dbindex.model.AssignMass;
 import edu.scripps.yates.dtaselectparser.util.DTASelectModification;
 import edu.scripps.yates.dtaselectparser.util.DTASelectPSM;
 import edu.scripps.yates.dtaselectparser.util.DTASelectProtein;
@@ -125,7 +124,8 @@ public class SpectrumQueryAdapter implements Adapter<SpectrumQuery> {
 				ModAminoacidMass modAminoacidMass = new ModAminoacidMass();
 				modificationInfo.getModAminoacidMass().add(modAminoacidMass);
 				if (ptm.getModificationShift() != null) {
-					modAminoacidMass.setMass(ptm.getModificationShift() + AssignMass.getMass(ptm.getAa()));
+					modAminoacidMass.setMass(ptm.getModificationShift()
+							+ edu.scripps.yates.utilities.masses.AssignMass.getMass(ptm.getAa()));
 				}
 				modAminoacidMass.setPosition(ptm.getModPosition());
 			}
