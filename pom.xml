@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.scripps.yates</groupId>
   <artifactId>dtaselect2pepxml</artifactId>
-  <version>0.2-SNAPSHOT</version>
+  <version>0.3</version>
   <name>DTASelect2PepXML</name>
   <description>Converter from DTASelect to pepXML formats</description>
   <properties>
