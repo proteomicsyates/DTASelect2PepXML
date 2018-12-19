@@ -95,9 +95,9 @@ public class SpectrumQueryAdapter implements Adapter<SpectrumQuery> {
 			final Protein protein = proteinList.get(0);
 			searchHit.setProtein(protein.getAccession());
 			searchHit.setProteinDescr(protein.getDescription());
-			searchHit.setProteinMw(protein.getMw());
+			searchHit.setProteinMw(protein.getMw().doubleValue());
 		}
-		Double delta = null;
+		Float delta = null;
 		searchHit.setNumTotProteins(proteinList.size());
 		if (psm.getCalcMH() != null) {
 			searchHit.setCalcNeutralPepMass(psm.getCalcMH());
@@ -114,7 +114,7 @@ public class SpectrumQueryAdapter implements Adapter<SpectrumQuery> {
 			final AlternativeProtein alternativeProtein = new AlternativeProtein();
 			alternativeProtein.setProtein(protein.getAccession());
 			alternativeProtein.setProteinDescr(protein.getDescription());
-			alternativeProtein.setProteinMw(protein.getMw());
+			alternativeProtein.setProteinMw(protein.getMw().doubleValue());
 			searchHit.getAlternativeProtein().add(alternativeProtein);
 		}
 
