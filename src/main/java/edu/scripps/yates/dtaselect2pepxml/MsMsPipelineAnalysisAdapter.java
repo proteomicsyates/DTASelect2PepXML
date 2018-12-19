@@ -18,8 +18,8 @@ import org.apache.commons.io.FilenameUtils;
 import com.compomics.util.protein.Enzyme;
 
 import edu.scripps.yates.dtaselectparser.DTASelectParser;
-import edu.scripps.yates.dtaselectparser.util.DTASelectPSM;
 import edu.scripps.yates.utilities.pattern.Adapter;
+import edu.scripps.yates.utilities.proteomicsmodel.PSM;
 import gnu.trove.map.hash.THashMap;
 import gnu.trove.set.hash.THashSet;
 import umich.ms.fileio.filetypes.pepxml.jaxb.nested.EngineType;
@@ -39,15 +39,15 @@ public class MsMsPipelineAnalysisAdapter implements Adapter<MsmsPipelineAnalysis
 	public MsMsPipelineAnalysisAdapter(DTASelectParser parser, File rawFileFolder, String rawFileExtension,
 			File fastaFile, com.compomics.util.protein.Enzyme enzyme2) {
 		this.parser = parser;
-		String inputFile = parser.getInputFilePathes().iterator().next();
-		this.fileName = FilenameUtils.getName(inputFile);
+		final String inputFile = parser.getInputFilePathes().iterator().next();
+		fileName = FilenameUtils.getName(inputFile);
 		this.rawFileFolder = rawFileFolder;
 		if (rawFileExtension != null) {
-			this.rawDataType = rawFileExtension;
+			rawDataType = rawFileExtension;
 		} else {
-			this.rawDataType = "mzXML";
+			rawDataType = "mzXML";
 		}
-		this.enzyme = enzyme2;
+		enzyme = enzyme2;
 		this.fastaFile = fastaFile;
 	}
 
@@ -55,33 +55,34 @@ public class MsMsPipelineAnalysisAdapter implements Adapter<MsmsPipelineAnalysis
 	public MsmsPipelineAnalysis adapt() {
 		try {
 			System.out.println("Reading input file: " + fileName);
-			MsmsPipelineAnalysis msmsPipelineAnalysis = new MsmsPipelineAnalysis();
+			final MsmsPipelineAnalysis msmsPipelineAnalysis = new MsmsPipelineAnalysis();
 			msmsPipelineAnalysis.setSummaryXml(fileName);
-			Date now = new Date();
-			GregorianCalendar c = new GregorianCalendar();
+			final Date now = new Date();
+			final GregorianCalendar c = new GregorianCalendar();
 			c.setTime(now);
-			XMLGregorianCalendar date2 = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+			final XMLGregorianCalendar date2 = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
 			msmsPipelineAnalysis.setDate(date2);
 
-			List<MsmsPipelineAnalysis.MsmsRunSummary> msmsRunSummaryList = msmsPipelineAnalysis.getMsmsRunSummary();
+			final List<MsmsPipelineAnalysis.MsmsRunSummary> msmsRunSummaryList = msmsPipelineAnalysis
+					.getMsmsRunSummary();
 
-			Map<String, Set<DTASelectPSM>> psmsByRawFile = new THashMap<String, Set<DTASelectPSM>>();
-			Collection<DTASelectPSM> values = parser.getDTASelectPSMsByPSMID().values();
-			for (DTASelectPSM psm : values) {
-				if (psmsByRawFile.containsKey(psm.getRawFileName())) {
-					psmsByRawFile.get(psm.getRawFileName()).add(psm);
+			final Map<String, Set<PSM>> psmsByRawFile = new THashMap<String, Set<PSM>>();
+			final Collection<PSM> values = parser.getPSMsByPSMID().values();
+			for (final PSM psm : values) {
+				if (psmsByRawFile.containsKey(psm.getMSRun().getRunId())) {
+					psmsByRawFile.get(psm.getMSRun().getRunId()).add(psm);
 				} else {
-					Set<DTASelectPSM> psms = new THashSet<DTASelectPSM>();
+					final Set<PSM> psms = new THashSet<PSM>();
 					psms.add(psm);
-					psmsByRawFile.put(psm.getRawFileName(), psms);
+					psmsByRawFile.put(psm.getMSRun().getRunId(), psms);
 				}
 			}
-			for (String rawFileName : psmsByRawFile.keySet()) {
+			for (final String rawFileName : psmsByRawFile.keySet()) {
 
-				MsmsPipelineAnalysis.MsmsRunSummary msmsRunSummary = new MsmsPipelineAnalysis.MsmsRunSummary();
+				final MsmsPipelineAnalysis.MsmsRunSummary msmsRunSummary = new MsmsPipelineAnalysis.MsmsRunSummary();
 				msmsRunSummaryList.add(msmsRunSummary);
 				String baseName = null;
-				if (this.rawFileFolder != null && rawFileFolder.exists()) {
+				if (rawFileFolder != null && rawFileFolder.exists()) {
 					baseName = rawFileFolder.getAbsolutePath() + File.separator + rawFileName;
 				} else {
 					baseName = parser.getInputFilePathes().iterator().next();
@@ -96,14 +97,14 @@ public class MsMsPipelineAnalysisAdapter implements Adapter<MsmsPipelineAnalysis
 				msmsRunSummary.setRawData("." + rawDataType);
 				// enzyme
 				if (enzyme != null) {
-					SampleEnzyme sampleEnzyme = new SampleEnzyme();
+					final SampleEnzyme sampleEnzyme = new SampleEnzyme();
 					msmsRunSummary.setSampleEnzyme(sampleEnzyme);
 					if (enzyme.getTitle() != null) {
 						sampleEnzyme.setName(enzyme.getTitle());
 					}
 
 					// specificicity
-					Specificity specificity = new Specificity();
+					final Specificity specificity = new Specificity();
 					sampleEnzyme.getSpecificity().add(specificity);
 					String sense = "C";
 					if (enzyme.getPosition() == Enzyme.CTERM) {
@@ -124,25 +125,25 @@ public class MsMsPipelineAnalysisAdapter implements Adapter<MsmsPipelineAnalysis
 				// search summary
 				msmsRunSummary.getSearchSummary()
 						.add(new SearchSummaryAdapter(parser, enzyme, rawFileName, rawFileFolder, fastaFile).adapt());
-				List<MsmsPipelineAnalysis.MsmsRunSummary.SpectrumQuery> spectrumQueryList = msmsRunSummary
+				final List<MsmsPipelineAnalysis.MsmsRunSummary.SpectrumQuery> spectrumQueryList = msmsRunSummary
 						.getSpectrumQuery();
 
-				for (DTASelectPSM dtaSelectPSM : psmsByRawFile.get(rawFileName)) {
+				for (final PSM dtaSelectPSM : psmsByRawFile.get(rawFileName)) {
 					spectrumQueryList.add(new SpectrumQueryAdapter(dtaSelectPSM).adapt());
 				}
 			}
 			return msmsPipelineAnalysis;
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
-		} catch (DatatypeConfigurationException e) {
+		} catch (final DatatypeConfigurationException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 
 	private String getString(char[] aminoAcidBefore) {
-		StringBuilder sb = new StringBuilder();
-		for (char character : aminoAcidBefore) {
+		final StringBuilder sb = new StringBuilder();
+		for (final char character : aminoAcidBefore) {
 			sb.append(character);
 		}
 		return sb.toString();
